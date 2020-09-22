@@ -72,7 +72,7 @@ function initMap() {
     GoogleMapAPI.deleteMarkers();
     GoogleMapAPI.addMarker(GoogleMapAPI.getDefaultCoorindates());
 
-    debugger
+
     google.maps.event.clearListeners(GoogleMapAPI.map, 'click');
     google.maps.event.addListener(GoogleMapAPI.map, 'click', MapClickedCallback);
 
@@ -112,7 +112,7 @@ var GoogleMapAPI = new function () {
     };
 
     this.initializeMap = initializeMap;
-    this.setMapBounds=setMapBounds
+    this.setMapBounds = setMapBounds
     this.addMarker = addMarker;
     this.clearMarkers = clearMarkers;
     this.deleteMarkers = deleteMarkers;
@@ -120,6 +120,7 @@ var GoogleMapAPI = new function () {
     this.createCircle = createCircle;
     this.deleteCircles = deleteCircles;
     this.geoCodeAddress = geoCodeAddress;
+    this.geoCodeAddressWithBounds = geoCodeAddressWithBounds;
 }
 
 function initializeMap() {
@@ -149,10 +150,11 @@ function addMarker(location) {
 
 
 
-function geoCodeAddress(address) {
-
+function geoCodeAddress(address, bounds) {
+    debugger
     this.getGeoCoder().geocode({
         'address': address,
+        bounds: bounds,
         componentRestrictions: {
             country: 'AE'
         }
@@ -161,17 +163,12 @@ function geoCodeAddress(address) {
             debugger
             GoogleMapAPI.deleteMarkers();
             GoogleMapAPI.map.setCenter(results[0].geometry.location);
-            //        var infoWindow = new google.maps.InfoWindow({
-            //        content: 'Click the map to get Latitude Longitude!',
-            //          position: results[0].geometry.location
-            //      });
-            //       infoWindow.open(map);
 
             GoogleMapAPI.addMarker(results[0].geometry.location);
             MapOptions.setCoordinates(results[0].geometry.location);
 
         } else {
-            console.log('Geocode location not found.');
+            alert('Geocode location not found.');
             //            alert('Geocode was not successful for the following reason: ' + status);
         }
     });
@@ -208,7 +205,7 @@ function createCircle(location) {
     });
 
     google.maps.event.addListener(circle, 'click', CircleClicked);
-    
+
 
     this.circles.push(circle);
 }
@@ -237,4 +234,49 @@ function setMapBounds(bounds) {
         }
     }
     this.map.setOptions(options);
+}
+
+
+function geoCodeAddressWithBounds(address, bounds) {
+    debugger
+    this.getGeoCoder().geocode({
+        'address': address,
+        bounds: bounds,
+        componentRestrictions: {
+            country: 'AE'
+        }
+    }, function (results, status) {
+        if (status === 'OK') {
+
+            var result = bounds.contains(results[0].geometry.location);
+            alert(result);
+
+            //    var point;
+
+            //    // Find first location inside restricted area
+            //    for (var i = 0 ; i < results.length ; i++) {
+            //        point = results[i].geometry.location;
+            //        // I compare my lng values this way because their are negative
+            //        if (point.lat() > latMin && point.lat() < latMax && point.lng() < lngMin && point.lng() > lngMax) {
+            //            alert('Result inside circle');
+            //        }
+            //        // No results inside our area
+            //        if (i == (results.length - 1)) {
+            //            alert("Result outside circle");
+            //        }
+            //    }
+
+
+            //} else {
+            //    alert('Geocode location not found.');
+            //    //            alert('Geocode was not successful for the following reason: ' + status);
+            //}
+        }
+    });
+
+};
+
+function GeoCodeWithBounds() {
+
+    GoogleMapAPI.geoCodeAddressWithBounds(MapOptions.getBuildingAddress(), GoogleMapAPI.circles[0].getBounds());
 }
