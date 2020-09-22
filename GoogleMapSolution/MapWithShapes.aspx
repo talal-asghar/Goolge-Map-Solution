@@ -35,6 +35,7 @@
                 <input type="button" onclick="GoogleMapAPI.createCircle()" value="Create Circle" />
                 <input type="button" onclick="GoogleMapAPI.deleteCircles()" value="Delete All Circles" />
                 <input type="button" onclick="GeoCodeWithBounds()" value="Geocode with Bounds" />
+                <input type="button" onclick="GoogleMapAPI.setMapNewCenter()" value="Set Map New Geocoded Center" />
             </div>
         </div>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en"></script>

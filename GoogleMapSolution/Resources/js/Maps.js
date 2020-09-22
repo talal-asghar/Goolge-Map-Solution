@@ -58,7 +58,11 @@ var MapOptions = new function () {
         }
     };
     this.setCoordinates = function (coordinates) {
+        debugger
         document.getElementsByClassName('Coordinates')[0].value = coordinates;
+    };
+    this.getCoordinates = function () {
+        return document.getElementsByClassName('Coordinates')[0].value;
     }
 }
 
@@ -113,6 +117,7 @@ var GoogleMapAPI = new function () {
 
     this.initializeMap = initializeMap;
     this.setMapBounds = setMapBounds
+    this.setMapNewCenter = setMapNewCenter;
     this.addMarker = addMarker;
     this.clearMarkers = clearMarkers;
     this.deleteMarkers = deleteMarkers;
@@ -165,7 +170,7 @@ function geoCodeAddress(address, bounds) {
             GoogleMapAPI.map.setCenter(results[0].geometry.location);
 
             GoogleMapAPI.addMarker(results[0].geometry.location);
-            MapOptions.setCoordinates(results[0].geometry.location);
+            MapOptions.setCoordinates(Jresults[0].geometry.location);
 
         } else {
             alert('Geocode location not found.');
@@ -193,8 +198,11 @@ function clearMarkers() {
 
 function createCircle(location) {
 
+    if (location == undefined)
+        location = this.getDefaultCoorindates();
+
     const circle = new google.maps.Circle({
-        center: this.getDefaultCoorindates(),
+        center: location,
         map: this.map,
         radius: MapOptions.getCircleRadius(),          // IN METERS.
         fillColor: '#FF6600',
@@ -248,8 +256,9 @@ function geoCodeAddressWithBounds(address, bounds) {
     }, function (results, status) {
         if (status === 'OK') {
 
+            MapOptions.setCoordinates(JSON.stringify(results[0].geometry.location));
             var result = bounds.contains(results[0].geometry.location);
-            alert(result);
+//            alert(result);
 
             //    var point;
 
@@ -275,6 +284,26 @@ function geoCodeAddressWithBounds(address, bounds) {
     });
 
 };
+
+function setMapNewCenter() {
+
+    debugger
+    var coordinates = JSON.parse(MapOptions.getCoordinates());
+    var options = {
+        center: coordinates,
+        zoom: MapOptions.getZoom(),
+        streetViewControl: false,
+        mapTypeControl: false,
+        fullscreenControl: false
+    };
+
+    this.deleteMarkers();
+    this.deleteCircles();
+    this.map.setOptions(options);
+    this.addMarker(coordinates);
+    this.createCircle(coordinates);
+    this.setMapBounds(this.circles[0].getBounds());
+}
 
 function GeoCodeWithBounds() {
 
