@@ -185,8 +185,10 @@
                     //                    alert(status);
                     return;
                 }
+                debugger
                 let results_html = [];
                 predictions.forEach(function (prediction) {
+                    debugger
                     var formattedText = prediction.description.replace(new RegExp("(" + autocomplete_input.value + ")", "gi"), '<b>$1</b>');
                     results_html.push(`<li class="autocomplete-item" data-type="place" data-place-id=${prediction.place_id}><span class="autocomplete-icon icon-localities"></span><span style='display:none' class='PlaceName'>${prediction.structured_formatting.main_text}</span><span class="autocomplete-text">${formattedText}</span></li>`);
                 });

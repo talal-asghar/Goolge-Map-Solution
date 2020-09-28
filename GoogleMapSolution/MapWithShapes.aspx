@@ -14,14 +14,15 @@
         <div style="padding: 20px">
             <div id="InputFields">
                 <h3>Address Fields:</h3>
-                <input type="text" placeholder="Building Address" id="wtinpBuildingAddress" />
+                <input type="text" placeholder="Building Address" class="inpBuilding" value="Building 80 Discovery Gardens" id="wtinpBuildingAddress" />
                 <input type="text" placeholder="Landmark Address" id="wtinpLandmarkAddress" />
                 <br />
-                <input type="text" placeholder="Default Latitude" value="25.100491" id="inpDefaultLat" />
-                <input type="text" placeholder="Default Longitude" value="55.16925819999999" id="inpDefaultLong" />
+                <input type="text" placeholder="Default Latitude" class="inpAreaLatitude" value="25.0390117" id="inpDefaultLat" />
+                <input type="text" placeholder="Default Longitude" value="55.1444815" class="inpAreaLongitude" id="inpDefaultLong" />
                 <br />
-                <input type="text" placeholder="Circle Radius" id="wtinpCircleRadius" value="3000" />
-            </div>
+                <input type="text" placeholder="Circle Radius" class="inpCircleRadius" id="wtinpCircleRadius" value="1000" />
+                <input type="checkbox" class="chkBoxPredictionSearchEnabled" checked="checked" />
+             </div>
 
 
             <div class="MapPlaceHolder" style="margin-top: 20px; margin-bottom: 20px">
@@ -30,7 +31,7 @@
 
             <div style="margin-top: 20px">
                 <h3>Get Coordinates Section:</h3>
-                <input type="button" value="Load Map" onclick="initMap()" />
+                <input type="button" value="Load Map" onclick="LoadMap()" />
                 <input type="text" placeholder="Coorindates" id="inputCoordinates" class="Coordinates" />
                 <input type="button" onclick="GoogleMapAPI.createCircle()" value="Create Circle" />
                 <input type="button" onclick="GoogleMapAPI.deleteCircles()" value="Delete All Circles" />
@@ -38,7 +39,8 @@
                 <input type="button" onclick="GoogleMapAPI.setMapNewCenter()" value="Set Map New Geocoded Center" />
             </div>
         </div>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en"></script>
+                    <div class="PlaceSearchContainer"></div>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
         <script src="Resources/js/Maps.js"></script>
     </form>
 </body>
