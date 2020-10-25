@@ -213,20 +213,20 @@ function addMarker(location) {
         map: this.map
     });
 
-    google.maps.event.addListener(marker, 'click', function (event) {
-        debugger    
-    var         service = new google.maps.places.PlacesService(GoogleMapAPI.map);
+    //google.maps.event.addListener(marker, 'click', function (event) {
+    //    debugger
+    //    var service = new google.maps.places.PlacesService(GoogleMapAPI.map);
 
-        service.getDetails(location, function (result, status) {
-            if (status !== google.maps.places.PlacesServiceStatus.OK) {
-                console.error(status);
-                return;
-            }
-            alert(result.formatted_address);
-            //infoWindow.setContent(result.name + "<br>" + result.formatted_address + "<br>" + result.formatted_phone_number);
-            //infoWindow.open(map, marker);
-        });
-    });
+    //    service.getDetails(location, function (result, status) {
+    //        if (status !== google.maps.places.PlacesServiceStatus.OK) {
+    //            console.error(status);
+    //            return;
+    //        }
+    //        alert(result.formatted_address);
+    //        //infoWindow.setContent(result.name + "<br>" + result.formatted_address + "<br>" + result.formatted_phone_number);
+    //        //infoWindow.open(map, marker);
+    //    });
+    //});
 
     this.markers.push(marker);
 
@@ -238,7 +238,7 @@ function geoCodeAddress(address, callback) {
         'address': address,
         componentRestrictions: {
             country: 'AE',
-            locality:'Discovery Gardens'
+            locality: 'Discovery Gardens'
         }
     }, callback);
 };
@@ -254,27 +254,30 @@ function geocodeLatLng(geocoder, map, latlng) {
     geocoder.geocode({ location: latlng }, (results, status) => {
         if (status === "OK") {
             if (results[0]) {
-                map.setZoom(16);
-                const marker = new google.maps.Marker({
-                    position: latlng,
-                    map: map,
-                });
+                //map.setZoom(16);
+                //const marker = new google.maps.Marker({
+                //    position: latlng,
+                //    map: map,
+                //});
+                //debugger
+                //alert(results[0].formatted_address);
                 debugger
-                alert(results[0].formatted_address);
+                GoogleMapAPI.deleteMarkers();
+                GoogleMapAPI.addMarker(latlng);
+                $("#txtReverseAddress").val(results[0].formatted_address);
+                //const request = {
+                //    placeId: results[0].place_id,
+                //    fields: ["name", "formatted_address", "place_id", "geometry"],
+                //};
 
-                const request = {
-                    placeId: results[0].place_id,
-                    fields: ["name", "formatted_address", "place_id", "geometry"],
-                };
+                //const service = new google.maps.places.PlacesService(map);
 
-                const service = new google.maps.places.PlacesService(map);
-
-                service.getDetails(request, (place, status) => {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        debugger
-                        alert(place.name + " - " + place.formatted_address);
-                    }
-                });
+                //service.getDetails(request, (place, status) => {
+                //    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                //        debugger
+                //        alert(place.name + " - " + place.formatted_address);
+                //    }
+                //});
 
 
                 //const infowindow = new google.maps.InfoWindow();
@@ -441,7 +444,7 @@ function LoadMapWithCoordinates(lat, lng) {
 
 function MapClickCallback(event) {
 
-    debugger
+    //debugger
     //var areaValue = MapOptions.getAreaValue();
     //if (MapOptions.IsUnknownArea()) {
     //    GoogleMapAPI.deleteMarkers();
@@ -451,7 +454,8 @@ function MapClickCallback(event) {
     //    var notifyResponse = new MapNotifyResponse(true, ErrorCodes.OutsideCircle, null);
     //    fakeNotify(notifyResponse);
     //}
-
+    
+    $("#txtReverseAddress").val("");
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
 
 
@@ -540,10 +544,11 @@ function HideMap() {
 
 function CircleClicked(event) {
 
+    debugger
 
-    GoogleMapAPI.deleteMarkers();
-    GoogleMapAPI.addMarker(event.latLng);
-    NotifyCoordinatesToParent(event.latLng);
+    //NotifyCoordinatesToParent(event.latLng);
+
+    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);
 }
 
 

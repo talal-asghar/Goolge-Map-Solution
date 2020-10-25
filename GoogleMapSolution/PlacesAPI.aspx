@@ -19,8 +19,20 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
+    <script src="Resources/js/common.js"></script>
     <script src="Resources/js/Maps.js"></script>
     <script>
+        $(document).ready(function () {
+            BindAreas();
+
+            $('#cmbArea').change(function () {
+                var selectedValue = $("#cmbArea option:selected").val();
+                var selectedArea = getAreaByAreaId(parseInt(selectedValue));
+                $("#latitude").val(selectedArea.Latitude);
+                $("#longitude").val(selectedArea.Longitude);
+                $("#radius").val(selectedArea.Radius);
+            });
+        });
 
         function SearchFromQuery() {
             debugger
@@ -97,11 +109,12 @@
             var coordinates = new google.maps.LatLng(lat, long);
 
             var textValue = $('#textSearch').val();
+            var area = $("#cmbArea option:selected").text();
 
             GoogleMapAPI.initializeMap();
             GoogleMapAPI.setMapNewCenter(coordinates);
             GoogleMapAPI.map.setZoom(13);
-            GoogleMapAPI.geoCodeAddressWithBounds(textValue, GoogleMapAPI.circles[0].getBounds(), GeoCodeResponse_VerifyBounds);
+            GoogleMapAPI.geoCodeAddressWithBounds(textValue + " " + area, GoogleMapAPI.circles[0].getBounds(), GeoCodeResponse_VerifyBounds);
         }
 
         function GetPlacePredictions() {
@@ -189,7 +202,12 @@
 <body>
     <form id="form1" runat="server">
         <div class="SearchResult">
-            <input type="text" id="textSearch" value="" placeholder="Enter Text" /><br />
+            Enter Building and Street<input type="text" id="textSearch" value="" placeholder="Enter Text" /><br />
+            Select Area:
+            <select id="cmbArea" style="width:300px">
+                <option value="0">Select Area</option>
+            </select>
+            <br />
             <input type="text" id="latitude" value="25.2201105" placeholder="Latitude" />
             <input type="text" id="longitude" value="55.2563077" placeholder="Longitude" />
             <input type="text" class="inpCircleRadius" id="radius" value="3000" placeholder="Radius" />
@@ -197,8 +215,9 @@
             <input type="button" onclick="SearchFromQuery()" value="Place Search" />
             <input type="button" onclick="TextSearch()" value="Fuzzy Search" />
             <input type="button" onclick="GetPlacePredictions()" value="Get Predictions" />
-            <input type="button" onclick="GeoCodeAddress()" value="Geocode Address" />
-            <input type="text" id="txtPlaceId" />
+            <input type="button" onclick="GeoCodeAddress()" value="Geocode Address" /><br />
+            Place Id:<input type="text" id="txtPlaceId" style="width:200px" /><br />
+            Reverse Geocoded Address<input type="text" id="txtReverseAddress" style="width:400px" />
 
             <div class="PlaceSearchContainer"></div>
             <br />
