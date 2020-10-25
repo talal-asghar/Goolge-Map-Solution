@@ -198,7 +198,7 @@
             <input type="button" onclick="TextSearch()" value="Fuzzy Search" />
             <input type="button" onclick="GetPlacePredictions()" value="Get Predictions" />
             <input type="button" onclick="GeoCodeAddress()" value="Geocode Address" />
-
+            <input type="text" id="txtPlaceId" />
 
             <div class="PlaceSearchContainer"></div>
             <br />

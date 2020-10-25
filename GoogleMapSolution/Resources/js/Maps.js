@@ -207,10 +207,27 @@ function initializeMap() {
 };
 
 function addMarker(location) {
+    debugger
     const marker = new google.maps.Marker({
         position: location,
         map: this.map
     });
+
+    google.maps.event.addListener(marker, 'click', function (event) {
+        debugger    
+    var         service = new google.maps.places.PlacesService(GoogleMapAPI.map);
+
+        service.getDetails(location, function (result, status) {
+            if (status !== google.maps.places.PlacesServiceStatus.OK) {
+                console.error(status);
+                return;
+            }
+            alert(result.formatted_address);
+            //infoWindow.setContent(result.name + "<br>" + result.formatted_address + "<br>" + result.formatted_phone_number);
+            //infoWindow.open(map, marker);
+        });
+    });
+
     this.markers.push(marker);
 
 }
@@ -225,6 +242,52 @@ function geoCodeAddress(address, callback) {
         }
     }, callback);
 };
+
+function geocodeLatLng(geocoder, map, latlng) {
+    //const input = document.getElementById("latlng").value;
+    //const latlngStr = input.split(",", 2);
+    //const latlng = {
+    //    lat: parseFloat(latlngStr[0]),
+    //    lng: parseFloat(latlngStr[1]),
+    //};
+    debugger
+    geocoder.geocode({ location: latlng }, (results, status) => {
+        if (status === "OK") {
+            if (results[0]) {
+                map.setZoom(16);
+                const marker = new google.maps.Marker({
+                    position: latlng,
+                    map: map,
+                });
+                debugger
+                alert(results[0].formatted_address);
+
+                const request = {
+                    placeId: results[0].place_id,
+                    fields: ["name", "formatted_address", "place_id", "geometry"],
+                };
+
+                const service = new google.maps.places.PlacesService(map);
+
+                service.getDetails(request, (place, status) => {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        debugger
+                        alert(place.name + " - " + place.formatted_address);
+                    }
+                });
+
+
+                //const infowindow = new google.maps.InfoWindow();
+                //infowindow.setContent(results[0].formatted_address);
+                //infowindow.open(map, marker);
+            } else {
+                window.alert("No results found");
+            }
+        } else {
+            window.alert("Geocoder failed due to: " + status);
+        }
+    });
+}
 
 function setMapOnAllMarkers(map) {
     for (let i = 0; i < this.markers.length; i++) {
@@ -378,15 +441,21 @@ function LoadMapWithCoordinates(lat, lng) {
 
 function MapClickCallback(event) {
 
-    var areaValue = MapOptions.getAreaValue();
-    if (MapOptions.IsUnknownArea()) {
-        GoogleMapAPI.deleteMarkers();
-        GoogleMapAPI.addMarker(event.latLng);
-        NotifyCoordinatesToParent(event.latLng);
-    } else {
-        var notifyResponse = new MapNotifyResponse(true, ErrorCodes.OutsideCircle, null);
-        fakeNotify(notifyResponse);
-    }
+    debugger
+    //var areaValue = MapOptions.getAreaValue();
+    //if (MapOptions.IsUnknownArea()) {
+    //    GoogleMapAPI.deleteMarkers();
+    //    GoogleMapAPI.addMarker(event.latLng);
+    //    NotifyCoordinatesToParent(event.latLng);
+    //} else {
+    //    var notifyResponse = new MapNotifyResponse(true, ErrorCodes.OutsideCircle, null);
+    //    fakeNotify(notifyResponse);
+    //}
+
+    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
+
+
+
 }
 
 function GeoCodeResponse_SetCoordinatesMapCenter(results, status) {
