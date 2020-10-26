@@ -20,7 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
     <script src="Resources/js/common.js"></script>
-    <script src="Resources/js/Maps.js"></script>
+    <script src="Resources/js/GMaps.js"></script>
     <script>
         $(document).ready(function () {
             BindAreas();
