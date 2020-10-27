@@ -7,7 +7,7 @@ http://catalog.api.2gis.ru/3.0/items?key=rutmxu6036&q=empire%20heights&fields=it
 
 function GeoCodeAddress2GIS(address, lat, lng, radius) {
     var geoCodeURL = baseURL + "key=" + key + "&q=" + address + "&fields=items.geometry.centroid&type=building&region_id=99&point=" + lng + "," + lat + "&radius=" + radius;
-
+    console.log(geoCodeURL);
     var jqxhr = $.get(geoCodeURL, function (response) {
         debugger
         if (response.result === undefined || response.result.items.length == 0) {
@@ -36,13 +36,12 @@ function LoadGISMap(lat, lng) {
                 center: [lat, lng],
                 zoom: 15
             });
-
-            AddMarkerGIS(lat, lng);
             mapGIS.on('click', GISMapClickCallback);
+            AddMarkerGIS(lat, lng);
         });
     }
     else {
-        debugger
+
         mapGIS.setView([lat, lng], 15);
         AddMarkerGIS(lat, lng);
     }
@@ -50,7 +49,9 @@ function LoadGISMap(lat, lng) {
 
 }
 function AddMarkerGIS(lat, lng) {
-   
+
+    if (marker != undefined)
+        RemoveMarkerGIS();
     marker = DG.marker([lat, lng]);
     marker.addTo(mapGIS);
 
@@ -60,7 +61,7 @@ function AddMarkerGIS(lat, lng) {
 }
 
 function RemoveMarkerGIS() {
-   
+
     marker.removeFrom(mapGIS);
 
     // DG.marker([lat, lng]).addTo(map);
@@ -69,7 +70,6 @@ function RemoveMarkerGIS() {
 
 
 function GISMapClickCallback(event) {
-    RemoveMarkerGIS();
     AddMarkerGIS(event.latlng.lat, event.latlng.lng);
     ReverseGeoCodeCoordinates2GIS(event.latlng.lat, event.latlng.lng);
 }

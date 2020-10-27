@@ -268,6 +268,7 @@ function geocodeLatLng(geocoder, map, latlng) {
                 GoogleMapAPI.deleteMarkers();
                 GoogleMapAPI.addMarker(latlng);
                 $("#txtReverseAddress").val(results[0].formatted_address);
+                console.log(JSON.stringify(results[0]));
                 //const request = {
                 //    placeId: results[0].place_id,
                 //    fields: ["name", "formatted_address", "place_id", "geometry"],
@@ -359,8 +360,7 @@ function geoCodeAddressWithBounds(address, bounds, callBack) {
             'address': address,
             bounds: bounds,
             componentRestrictions: {
-                country: 'AE',
-                locality: 'Discovery'
+                country: 'AE'
             }
         }, callBack);
     }

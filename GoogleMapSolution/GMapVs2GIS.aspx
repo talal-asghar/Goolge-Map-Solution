@@ -40,25 +40,42 @@
         });
 
         function Load2GISMap() {
-            debugger
-            textToSearch = $("#txtBuildingSearch").val();
-            GeoCodeAddress2GIS(textToSearch + " - " + selectedAreaText, latitude, longitude, radius);
+            if (validateFields()) {
+                debugger
+                textToSearch = $("#txtBuildingSearch").val();
+                GeoCodeAddress2GIS(textToSearch, latitude, longitude, radius);
+            }
         }
 
         function LoadGoogleMap() {
             debugger
-            var lat = parseFloat(latitude);
-            var long = parseFloat(longitude);
-            var coordinates = new google.maps.LatLng(lat, long);
+            if (validateFields()) {
+                var lat = parseFloat(latitude);
+                var long = parseFloat(longitude);
+                var coordinates = new google.maps.LatLng(lat, long);
 
-            textToSearch = $("#txtBuildingSearch").val();
+                textToSearch = $("#txtBuildingSearch").val();
 
-            GoogleMapAPI.initializeMap();
-      //      GoogleMapAPI.setMapNewCenter(coordinates);
-            GoogleMapAPI.geoCodeAddress(textToSearch, GeoCodeResponse_SetCoordinatesMapCenter);
-            GoogleMapAPI.map.setZoom(14);
+                GoogleMapAPI.initializeMap();
+                //      GoogleMapAPI.setMapNewCenter(coordinates);
+                GoogleMapAPI.geoCodeAddress(textToSearch + " - " + selectedAreaText, GeoCodeResponse_SetCoordinatesMapCenter);
+                GoogleMapAPI.map.setZoom(14);
+            }
 
+        }
 
+        function validateFields() {
+            if ($("#txtBuildingSearch").val() == "") {
+                alert('Please enter search text');
+                return false;
+            }
+
+            if (selectedAreaValue == "0" || selectedAreaValue == undefined) {
+                alert('Please select area');
+                return false;
+            }
+
+            return true;
         }
     </script>
 </head>
