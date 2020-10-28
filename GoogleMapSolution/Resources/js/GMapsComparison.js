@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Class that encapsulates all created Google Maps objects and abstracts
  * some of the events triggered
  */
@@ -204,10 +204,13 @@ function initializeMap() {
     if (this.map == undefined || this.map == null || mapPlaceHolder.innerHTML == '') {
         this.map = new google.maps.Map(mapPlaceHolder);
     }
+
+    google.maps.event.clearListeners(this.map, 'click');
+    google.maps.event.addListener(this.map, 'click', MapClickCallback);
 };
 
 function addMarker(location) {
-    debugger
+
     const marker = new google.maps.Marker({
         position: location,
         map: this.map
@@ -250,7 +253,7 @@ function geocodeLatLng(geocoder, map, latlng) {
     //    lat: parseFloat(latlngStr[0]),
     //    lng: parseFloat(latlngStr[1]),
     //};
-    debugger
+
     geocoder.geocode({ location: latlng }, (results, status) => {
         if (status === "OK") {
             if (results[0]) {
@@ -264,7 +267,22 @@ function geocodeLatLng(geocoder, map, latlng) {
                 debugger
                 GoogleMapAPI.deleteMarkers();
                 GoogleMapAPI.addMarker(latlng);
+                console.log(JSON.stringify(latlng));
                 $("#txtReverseAddress").val(results[0].formatted_address);
+                console.log(JSON.stringify(results[0]));
+
+                for (var a = 0; a < results.length; a++) {
+                    for (var i = 0; i < results[a].address_components.length; i++) {
+                        for (var j = 0; j < results[a].address_components[i].types.length; j++) {
+                            if (results[a].address_components[i].types[j] == "route" || results[a].address_components[i].types[j] == "street_number") {
+                                $("#txtReverseAddressStreet").val(results[a].address_components[i].long_name);
+                            }
+                            if (results[a].address_components[i].types[j] == "premise" || results[a].address_components[i].types[j] == "establishment") {
+                                $("#txtReverseAddressBuilding").val(results[a].address_components[i].long_name);
+                            }
+                        }
+                    }
+                }
                 //const request = {
                 //    placeId: results[0].place_id,
                 //    fields: ["name", "formatted_address", "place_id", "geometry"],
@@ -356,8 +374,7 @@ function geoCodeAddressWithBounds(address, bounds, callBack) {
             'address': address,
             bounds: bounds,
             componentRestrictions: {
-                country: 'AE',
-                locality: 'Discovery'
+                country: 'AE'
             }
         }, callBack);
     }
@@ -377,8 +394,8 @@ function setMapNewCenter(coordinates) {
     this.deleteCircles();
     this.map.setOptions(options);
     this.addMarker(coordinates);
-    this.createCircle(coordinates);
-    this.setMapBounds(this.circles[0].getBounds());
+    //    this.createCircle(coordinates);
+    //    this.setMapBounds(this.circles[0].getBounds());
 }
 
 function setMapNewCenterWithoutBounds(coordinates) {
@@ -437,14 +454,13 @@ function LoadMapWithCoordinates(lat, lng) {
 
     GoogleMapAPI.addMarker(coordinates);
 
-    google.maps.event.clearListeners(GoogleMapAPI.map, 'click');
-    google.maps.event.addListener(GoogleMapAPI.map, 'click', MapClickCallback);
+
 }
 
 
 function MapClickCallback(event) {
 
-    //debugger
+    debugger
     //var areaValue = MapOptions.getAreaValue();
     //if (MapOptions.IsUnknownArea()) {
     //    GoogleMapAPI.deleteMarkers();
@@ -456,6 +472,8 @@ function MapClickCallback(event) {
     //}
 
     $("#txtReverseAddress").val("");
+    $("#txtReverseAddressBuilding").val("");
+    $("#txtReverseAddressStreet").val("");
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
 
 

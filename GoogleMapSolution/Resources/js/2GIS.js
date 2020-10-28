@@ -76,13 +76,22 @@ function GISMapClickCallback(event) {
 
 function ReverseGeoCodeCoordinates2GIS(lat, lng) {
     debugger
-    var reverseGeoCodeURL = baseURL + "key=" + key + "&q=" + lat + "," + lng + "&fields=items.full_address_name&region_id=99";
+    $("#txt2GISRevereseGeocoded").val("");
+    $("#txt2GISBuilding").val("");
+    $("#txt2GISStreet").val("");
+
+    var reverseGeoCodeURL = baseURL + "key=" + key + "&q=" + lat + "," + lng + "&fields=items.address&region_id=99";
+    console.log(reverseGeoCodeURL);
     var jqxhr = $.get(reverseGeoCodeURL, function (response) {
         if (response.result === undefined || response.result.items.length == 0) {
             alert('Address not found');
             return;
         }
-        $("#txt2GISRevereseGeocoded").val(response.result.items[0].full_address_name);
+        console.log(JSON.stringify(response.result));
+        $("#txt2GISRevereseGeocoded").val(response.result.items[0].address_name);
+        $("#txt2GISBuilding").val(response.result.items[0].building_name);
+        if (response.result.items[0].address.components.length > 0)
+            $("#txt2GISStreet").val(response.result.items[0].address.components[0].street);
 
         //var center = response.result.items[0].geometry.centroid
         //var replacedString = response.result.items[0].geometry.centroid.replace("POINT(", "").replace(")", "");

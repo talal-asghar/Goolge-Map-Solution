@@ -4,14 +4,14 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
+    <title>2GIS vs GMaps</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
     <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
 
     <script src="Resources/js/common.js"></script>
-    <script src="Resources/js/GMaps.js"></script>
+    <script src="Resources/js/GMapsComparison.js"></script>
     <script src="Resources/js/2GIS.js"></script>
     <script>
 
@@ -84,8 +84,7 @@
         <div>
             <div style="text-align: center">
                 <div>
-                    <h2>2GIS vs GMAPs</h2>
-                    <br />
+                    <h2>2GIS vs GMAPs</h2>               
                 </div>
                 Enter Building and Street:
             <input type="text" id="txtBuildingSearch" />
@@ -103,14 +102,24 @@
             <div class="col-6" style="float: left;">
                 <input type="button" value="Load 2GIS Map" onclick="Load2GISMap()" />
                 <br />
-                <div id="2GISMap" style="width: 600px; height: 500px"></div>
-                <input type="text" id="txt2GISRevereseGeocoded" style="width: 600px" />
+                <div id="2GISMap" style="width: 600px; height: 400px"></div>
+                Full Address:
+                <input type="text" id="txt2GISRevereseGeocoded" style="width: 600px" /><br />
+                Building:
+                <input type="text" id="txt2GISBuilding" style="width: 600px" /><br />
+                Street:
+                <input type="text" id="txt2GISStreet" style="width: 600px" />
             </div>
             <div style="float: right; margin-right: 20px">
                 <input type="button" value="Load Google Map" onclick="LoadGoogleMap()" />
                 <br />
-                <div class="MapPlaceHolder" style="width: 600px; height: 500px;"></div>
-                <input type="text" id="txtReverseAddress" style="width: 600px" />
+                <div class="MapPlaceHolder" style="width: 600px; height: 400px;"></div>
+                Full Address:
+                <input type="text" id="txtReverseAddress" style="width: 600px" /><br />
+                Building:
+                <input type="text" id="txtReverseAddressBuilding" style="width: 600px" /><br />
+                Street:
+                <input type="text" id="txtReverseAddressStreet" style="width: 600px" />
             </div>
 
         </div>
