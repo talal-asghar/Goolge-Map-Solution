@@ -254,7 +254,7 @@ function geocodeLatLng(geocoder, map, latlng) {
     //    lng: parseFloat(latlngStr[1]),
     //};
 
-    geocoder.geocode({ location: latlng }, (results, status) => {
+    geocoder.geocode({ location: latlng, language: "ar" }, (results, status) => {
         if (status === "OK") {
             if (results[0]) {
                 //map.setZoom(16);

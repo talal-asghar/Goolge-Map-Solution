@@ -3,9 +3,29 @@ var key = 'ruydfq9322';
 var mapGIS;
 var marker;
 
-http://catalog.api.2gis.ru/3.0/items?key=rutmxu6036&q=empire%20heights&fields=items.geometry.centroid&type=building&region_id=99
-
 function GeoCodeAddress2GIS(address, lat, lng, radius) {
+    var geoCodeURL = baseURL + "key=" + key + "&q=" + address + "&fields=items.geometry.centroid&type=building&region_id=99&point=" + lng + "," + lat + "&radius=" + radius;
+    console.log(geoCodeURL);
+    var jqxhr = $.get(geoCodeURL, function (response) {
+        debugger
+        if (response.result === undefined || response.result.items.length == 0) {
+            alert('Result not found');
+            return;
+        }
+
+        var center = response.result.items[0].geometry.centroid
+        var replacedString = response.result.items[0].geometry.centroid.replace("POINT(", "").replace(")", "");
+        var splitString = replacedString.split(' ');
+        LoadGISMap(parseFloat(splitString[1]), parseFloat(splitString[0]));
+
+    }).fail(function (response) {
+        alert('failure');
+    })
+
+}
+
+
+function GetPredictionBasedResult(address, lat, lng, radius) {
     var geoCodeURL = baseURL + "key=" + key + "&q=" + address + "&fields=items.geometry.centroid&type=building&region_id=99&point=" + lng + "," + lat + "&radius=" + radius;
     console.log(geoCodeURL);
     var jqxhr = $.get(geoCodeURL, function (response) {
@@ -90,8 +110,9 @@ function ReverseGeoCodeCoordinates2GIS(lat, lng) {
         console.log(JSON.stringify(response.result));
         $("#txt2GISRevereseGeocoded").val(response.result.items[0].address_name);
         $("#txt2GISBuilding").val(response.result.items[0].building_name);
-        if (response.result.items[0].address.components.length > 0)
-            $("#txt2GISStreet").val(response.result.items[0].address.components[0].street);
+        if (response.result.items[0].address != undefined)
+            if (response.result.items[0].address.components.length > 0)
+                $("#txt2GISStreet").val(response.result.items[0].address.components[0].street);
 
         //var center = response.result.items[0].geometry.centroid
         //var replacedString = response.result.items[0].geometry.centroid.replace("POINT(", "").replace(")", "");

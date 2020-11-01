@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="GMapVs2GIS.aspx.cs" Inherits="GMapVs2GIS" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="2GISPlaces.aspx.cs" Inherits="GMapVs2GIS" %>
 
 <!DOCTYPE html>
 
@@ -7,11 +7,9 @@
     <title>2GIS vs GMaps</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=ar&libraries=places"></script>
     <script src="https://maps.api.2gis.ru/2.0/loader.js?pkg=full"></script>
 
     <script src="Resources/js/common.js"></script>
-    <script src="Resources/js/GMapsComparison.js"></script>
     <script src="Resources/js/2GIS.js"></script>
     <script>
 
@@ -47,21 +45,23 @@
             }
         }
 
-        function LoadGoogleMap() {
-            debugger
-            if (validateFields()) {
-                var lat = parseFloat(latitude);
-                var long = parseFloat(longitude);
-                var coordinates = new google.maps.LatLng(lat, long);
 
-                textToSearch = $("#txtBuildingSearch").val();
+        function GetAreas() {
+            var jqxhr = $.get("http://catalog.api.2gis.ru/2.0/geo/list?key=ruydfq9322&region_id=99&type=adm_div.district&fields=items.geometry.selection", function (response) {
+                debugger
+                if (response.result === undefined || response.result.items.length == 0) {
+                    alert('Result not found');
+                    return;
+                }
 
-                GoogleMapAPI.initializeMap();
-                //      GoogleMapAPI.setMapNewCenter(coordinates);
-                GoogleMapAPI.geoCodeAddress(textToSearch + " - " + selectedAreaText, GeoCodeResponse_SetCoordinatesMapCenter);
-                GoogleMapAPI.map.setZoom(14);
-            }
+                //var center = response.result.items[0].geometry.centroid
+                //var replacedString = response.result.items[0].geometry.centroid.replace("POINT(", "").replace(")", "");
+                //var splitString = replacedString.split(' ');
+                //LoadGISMap(parseFloat(splitString[1]), parseFloat(splitString[0]));
 
+            }).fail(function (response) {
+                alert('failure');
+            })
         }
 
         function validateFields() {
@@ -84,7 +84,7 @@
         <div>
             <div style="text-align: center">
                 <div>
-                    <h2>2GIS vs GMAPs</h2>               
+                    <h2>2GIS vs GMAPs</h2>
                 </div>
                 Enter Building and Street:
             <input type="text" id="txtBuildingSearch" />
@@ -101,7 +101,8 @@
             </div>
             <div class="col-6" style="float: left;">
                 <input type="button" value="Load 2GIS Map" onclick="Load2GISMap()" />
-                 <br />
+                <input type="button" value="Load 2GIS Map" onclick="GetAreas()" />
+                <br />
                 <div id="2GISMap" style="width: 600px; height: 400px"></div>
                 Full Address:
                 <input type="text" id="txt2GISRevereseGeocoded" style="width: 600px" /><br />
@@ -110,17 +111,7 @@
                 Street:
                 <input type="text" id="txt2GISStreet" style="width: 600px" />
             </div>
-            <div style="float: right; margin-right: 20px">
-                <input type="button" value="Load Google Map" onclick="LoadGoogleMap()" />
-                <br />
-                <div class="MapPlaceHolder" style="width: 600px; height: 400px;"></div>
-                Full Address:
-                <input type="text" id="txtReverseAddress" style="width: 600px" /><br />
-                Building:
-                <input type="text" id="txtReverseAddressBuilding" style="width: 600px" /><br />
-                Street:
-                <input type="text" id="txtReverseAddressStreet" style="width: 600px" />
-            </div>
+
 
         </div>
     </form>
