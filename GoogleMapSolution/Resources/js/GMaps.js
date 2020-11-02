@@ -152,6 +152,7 @@ var GoogleMapAPI = new function () {
     this.placeService;
     this.markers = [];
     this.circles = [];
+    this.polygons = [];
     this.defaultCoordinates;
     this.areaCoordinates
     this.getDefaultCoorindates = function () {
@@ -192,6 +193,8 @@ var GoogleMapAPI = new function () {
     this.setMapOnAllMarkers = setMapOnAllMarkers
     this.createCircle = createCircle;
     this.deleteCircles = deleteCircles;
+    this.createPolygon = createPolygon;
+    this.deletePolygon = deletePolygon;
     this.geoCodeAddress = geoCodeAddress;
     this.geoCodeAddressWithBounds = geoCodeAddressWithBounds;
     this.getPlacesFromQuery = getPlacesFromQuery;
@@ -324,6 +327,34 @@ function createCircle(location) {
     });
 
     google.maps.event.addListener(circle, 'click', CircleClicked);
+
+    this.circles.push(circle);
+}
+
+
+function createPolygon(location) {
+
+    //if (location == undefined)
+    //    location = this.getDefaultCoorindates();
+
+    const polygonCoordinatess = [
+        { lat: 25.774, lng: -80.19 },
+        { lat: 18.466, lng: -66.118 },
+        { lat: 32.321, lng: -64.757 },
+        { lat: 25.774, lng: -80.19 },
+    ];
+
+    const polygon = new google.maps.Polygon({
+        paths: triangleCoords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+        clickable=true
+    });
+
+    google.maps.event.addListener(polygon, 'click', PolygonClicked);
 
     this.circles.push(circle);
 }
@@ -543,6 +574,15 @@ function HideMap() {
 }
 
 function CircleClicked(event) {
+
+    debugger
+
+    //NotifyCoordinatesToParent(event.latLng);
+
+    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);
+}
+
+function PolygonClicked(event) {
 
     debugger
 

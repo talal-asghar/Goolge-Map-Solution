@@ -41,7 +41,7 @@
         </div>
                     <div class="PlaceSearchContainer"></div>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
-        <script src="Resources/js/Maps.js"></script>
+        <script src="Resources/js/GMaps.js"></script>
     </form>
 </body>
 </html>
