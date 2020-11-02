@@ -194,7 +194,7 @@ var GoogleMapAPI = new function () {
     this.createCircle = createCircle;
     this.deleteCircles = deleteCircles;
     this.createPolygon = createPolygon;
-    this.deletePolygon = deletePolygon;
+    this.deletePolygons = deletePolygons;
     this.geoCodeAddress = geoCodeAddress;
     this.geoCodeAddressWithBounds = geoCodeAddressWithBounds;
     this.getPlacesFromQuery = getPlacesFromQuery;
@@ -338,25 +338,26 @@ function createPolygon(location) {
     //    location = this.getDefaultCoorindates();
 
     const polygonCoordinatess = [
-        { lat: 25.774, lng: -80.19 },
-        { lat: 18.466, lng: -66.118 },
-        { lat: 32.321, lng: -64.757 },
-        { lat: 25.774, lng: -80.19 },
+        { lat: 25.025388, lng: 55.159329 },
+        { lat: 25.028516, lng: 55.162089 },
+        { lat: 25.051013, lng: 55.133677 },
+        { lat: 25.049176, lng: 55.127170 },
     ];
 
     const polygon = new google.maps.Polygon({
-        paths: triangleCoords,
+        paths: polygonCoordinatess,
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
         strokeWeight: 2,
         fillColor: "#FF0000",
         fillOpacity: 0.35,
-        clickable=true
+        clickable:true
     });
+    polygon.setMap(this.map);
 
     google.maps.event.addListener(polygon, 'click', PolygonClicked);
 
-    this.circles.push(circle);
+    this.polygons.push(polygon);
 }
 
 function deleteCircles() {
@@ -366,6 +367,15 @@ function deleteCircles() {
         this.circles[i].setMap(null);
     }
     this.circles = [];
+}
+
+function deletePolygons() {
+
+    for (let i = 0; i < this.polygons.length; i++) {
+        google.maps.event.clearListeners(this.polygons[i], 'click');
+        this.polygons[i].setMap(null);
+    }
+    this.polygons = [];
 }
 
 function setMapBounds(bounds) {
@@ -486,6 +496,7 @@ function MapClickCallback(event) {
     //    fakeNotify(notifyResponse);
     //}
 
+    alert('map clicked');
     $("#txtReverseAddress").val("");
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
 
@@ -584,8 +595,8 @@ function CircleClicked(event) {
 
 function PolygonClicked(event) {
 
-    debugger
 
+    alert('polygon clicked');
     //NotifyCoordinatesToParent(event.latLng);
 
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);

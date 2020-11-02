@@ -22,7 +22,7 @@
                 <br />
                 <input type="text" placeholder="Circle Radius" class="inpCircleRadius" id="wtinpCircleRadius" value="1000" />
                 <input type="checkbox" class="chkBoxPredictionSearchEnabled" checked="checked" />
-             </div>
+            </div>
 
 
             <div class="MapPlaceHolder" style="margin-top: 20px; margin-bottom: 20px">
@@ -35,11 +35,13 @@
                 <input type="text" placeholder="Coorindates" id="inputCoordinates" class="Coordinates" />
                 <input type="button" onclick="GoogleMapAPI.createCircle()" value="Create Circle" />
                 <input type="button" onclick="GoogleMapAPI.deleteCircles()" value="Delete All Circles" />
+                <input type="button" onclick="GoogleMapAPI.createPolygon()" value="Create Polygon" />
+                <input type="button" onclick="GoogleMapAPI.deletePolygon()" value="Delete All Polygons" />
                 <input type="button" onclick="GeoCodeWithBounds()" value="Geocode with Bounds" />
                 <input type="button" onclick="GoogleMapAPI.setMapNewCenter()" value="Set Map New Geocoded Center" />
             </div>
         </div>
-                    <div class="PlaceSearchContainer"></div>
+        <div class="PlaceSearchContainer"></div>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUkugsILXkVRYWgOqRv0vlo4Z6A4ngMTs&language=en&libraries=places"></script>
         <script src="Resources/js/GMaps.js"></script>
     </form>
