@@ -36,7 +36,7 @@
                 <input type="button" onclick="GoogleMapAPI.createCircle()" value="Create Circle" />
                 <input type="button" onclick="GoogleMapAPI.deleteCircles()" value="Delete All Circles" />
                 <input type="button" onclick="GoogleMapAPI.createPolygon()" value="Create Polygon" />
-                <input type="button" onclick="GoogleMapAPI.deletePolygon()" value="Delete All Polygons" />
+                <input type="button" onclick="GoogleMapAPI.deletePolygons()" value="Delete All Polygons" />
                 <input type="button" onclick="GeoCodeWithBounds()" value="Geocode with Bounds" />
                 <input type="button" onclick="GoogleMapAPI.setMapNewCenter()" value="Set Map New Geocoded Center" />
             </div>

@@ -74,7 +74,7 @@ var MapOptions = new function () {
         try {
             return parseInt($("input[id*='wtinpZoomLevel']")[0].value);
         } catch (err) {
-            return 15;
+            return 14;
             return "";
         }
     };
@@ -336,12 +336,18 @@ function createPolygon(location) {
 
     //if (location == undefined)
     //    location = this.getDefaultCoorindates();
-
+  
     const polygonCoordinatess = [
-        { lat: 25.025388, lng: 55.159329 },
-        { lat: 25.028516, lng: 55.162089 },
-        { lat: 25.051013, lng: 55.133677 },
-        { lat: 25.049176, lng: 55.127170 },
+        { lat: 25.050956, lng: 55.134056 },     
+        { lat: 25.050985, lng: 55.133820 },
+        { lat: 25.049216, lng: 55.127329},
+        { lat: 25.039107, lng: 55.140654 },
+        { lat: 25.033926, lng: 55.147628 },   
+        { lat: 25.025348, lng: 55.159345 },
+        { lat: 25.028381, lng: 55.162124 },
+        { lat: 25.028381, lng: 55.162124 },
+        { lat: 25.028565, lng: 55.162081 },   
+        { lat: 25.050917, lng: 55.134147 },   
     ];
 
     const polygon = new google.maps.Polygon({
@@ -351,7 +357,7 @@ function createPolygon(location) {
         strokeWeight: 2,
         fillColor: "#FF0000",
         fillOpacity: 0.35,
-        clickable:true
+        clickable: true
     });
     polygon.setMap(this.map);
 
@@ -370,7 +376,7 @@ function deleteCircles() {
 }
 
 function deletePolygons() {
-
+    debugger
     for (let i = 0; i < this.polygons.length; i++) {
         google.maps.event.clearListeners(this.polygons[i], 'click');
         this.polygons[i].setMap(null);
@@ -419,7 +425,7 @@ function setMapNewCenter(coordinates) {
     this.map.setOptions(options);
     this.addMarker(coordinates);
     this.createCircle(coordinates);
-    this.setMapBounds(this.circles[0].getBounds());
+    //  this.setMapBounds(this.circles[0].getBounds());
 }
 
 function setMapNewCenterWithoutBounds(coordinates) {
@@ -496,7 +502,16 @@ function MapClickCallback(event) {
     //    fakeNotify(notifyResponse);
     //}
 
-    alert('map clicked');
+    var polygon = GoogleMapAPI.polygons[0];
+    if (polygon == undefined || polygon == null)
+        alert('Polygon not found');
+    else {
+        const isInsideBounds = google.maps.geometry.poly.containsLocation(event.latLng, polygon)
+        if (isInsideBounds)
+            alert("Inside Polygon Boundary");
+        else
+            alert("Outside Polygon Boundary");
+    }
     $("#txtReverseAddress").val("");
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
 
@@ -595,8 +610,16 @@ function CircleClicked(event) {
 
 function PolygonClicked(event) {
 
-
-    alert('polygon clicked');
+    var polygon = GoogleMapAPI.polygons[0];
+    if (polygon == undefined || polygon == null)
+        alert('Polygon not found');
+    else {
+        const isInsideBounds = google.maps.geometry.poly.containsLocation(event.latLng, polygon)
+        if (isInsideBounds)
+            alert("Inside Polygon Boundary");
+        else
+            alert("Outside Polygon Boundary");
+    }
     //NotifyCoordinatesToParent(event.latLng);
 
     geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);
