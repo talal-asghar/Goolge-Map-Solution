@@ -264,12 +264,13 @@ function geocodeLatLng(geocoder, map, latlng) {
                 //});
                 //debugger
                 //alert(results[0].formatted_address);
-                debugger
+
                 GoogleMapAPI.deleteMarkers();
                 GoogleMapAPI.addMarker(latlng);
                 console.log(JSON.stringify(latlng));
                 $("#txtReverseAddress").val(results[0].formatted_address);
-                console.log(JSON.stringify(results[0]));
+                console.log("First Element " + JSON.stringify(results[0]));
+                console.log("All Elements " + JSON.stringify(results));
 
                 for (var a = 0; a < results.length; a++) {
                     for (var i = 0; i < results[a].address_components.length; i++) {
@@ -366,7 +367,7 @@ function setMapBounds(bounds) {
 }
 
 function geoCodeAddressWithBounds(address, bounds, callBack) {
-    debugger
+
     if (address == '')
         console.log('Invalid address');
     else {
@@ -435,7 +436,6 @@ function LoadMap() {
 
 function LoadMapWithCoordinates(lat, lng) {
 
-    debugger
 
     GoogleMapAPI.initializeMap();
 
@@ -460,7 +460,7 @@ function LoadMapWithCoordinates(lat, lng) {
 
 function MapClickCallback(event) {
 
-    debugger
+
     //var areaValue = MapOptions.getAreaValue();
     //if (MapOptions.IsUnknownArea()) {
     //    GoogleMapAPI.deleteMarkers();
@@ -500,7 +500,7 @@ function GeoCodeResponse_SetCoordinatesMapCenter(results, status) {
 }
 
 function GeoCodeResponse_VerifyBounds(results, status) {
-    debugger
+
     if (status == google.maps.GeocoderStatus.OK) {
 
         //Get bounds of circle
@@ -562,7 +562,7 @@ function HideMap() {
 
 function CircleClicked(event) {
 
-    debugger
+
 
     //NotifyCoordinatesToParent(event.latLng);
 

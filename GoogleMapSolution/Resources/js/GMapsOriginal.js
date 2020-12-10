@@ -1,12 +1,13 @@
-/**
+﻿/**
  * Class that encapsulates all created Google Maps objects and abstracts
  * some of the events triggered
  */
 
-function MapNotifyResponse(isError, errorCode, coordinates) {
+function MapNotifyResponse(isError, errorCode, coordinates, address) {
     this.IsError = isError;
     this.ErrorCode = errorCode;
     this.MapCoordinates = coordinates;
+    this.ReverseGeoCodedAddress = address;
 }
 
 function MapCoordinates(latitude, longitude) {
@@ -28,10 +29,6 @@ var MapOptions = new function () {
         var building = $("input[class*='inpBuilding']");
         if (building.length > 0)
             fullAddress = building.val();
-
-        var street = $("input[class*='inpStreet']");
-        if (street.length > 0)
-            fullAddress = fullAddress + " " + street.val();
 
         var area = $("input[class*='inpOtherArea']");
         if (area.length > 0)
@@ -74,7 +71,7 @@ var MapOptions = new function () {
         try {
             return parseInt($("input[id*='wtinpZoomLevel']")[0].value);
         } catch (err) {
-            return 14;
+            return 13;
             return "";
         }
     };
@@ -121,6 +118,13 @@ var MapOptions = new function () {
         else
             return "";
     };
+    this.getEmirateText = function () {
+        var emirate = $(".cmbEmirate option:selected");
+        if (emirate.length > 0 && !emirate.val().includes('0'))
+            return emirate.text();
+        else
+            return "";
+    };
     this.IsUnknownArea = function () {
         var chkBoxIsUnknown = $(".chkBoxIsUnknown");
 
@@ -152,7 +156,6 @@ var GoogleMapAPI = new function () {
     this.placeService;
     this.markers = [];
     this.circles = [];
-    this.polygons = [];
     this.defaultCoordinates;
     this.areaCoordinates
     this.getDefaultCoorindates = function () {
@@ -193,11 +196,10 @@ var GoogleMapAPI = new function () {
     this.setMapOnAllMarkers = setMapOnAllMarkers
     this.createCircle = createCircle;
     this.deleteCircles = deleteCircles;
-    this.createPolygon = createPolygon;
-    this.deletePolygons = deletePolygons;
     this.geoCodeAddress = geoCodeAddress;
     this.geoCodeAddressWithBounds = geoCodeAddressWithBounds;
     this.getPlacesFromQuery = getPlacesFromQuery;
+    this.reverseGeoCodeAddress = reverseGeoCodeAddress;
 }
 
 function initializeMap() {
@@ -210,27 +212,10 @@ function initializeMap() {
 };
 
 function addMarker(location) {
-    debugger
     const marker = new google.maps.Marker({
         position: location,
         map: this.map
     });
-
-    //google.maps.event.addListener(marker, 'click', function (event) {
-    //    debugger
-    //    var service = new google.maps.places.PlacesService(GoogleMapAPI.map);
-
-    //    service.getDetails(location, function (result, status) {
-    //        if (status !== google.maps.places.PlacesServiceStatus.OK) {
-    //            console.error(status);
-    //            return;
-    //        }
-    //        alert(result.formatted_address);
-    //        //infoWindow.setContent(result.name + "<br>" + result.formatted_address + "<br>" + result.formatted_phone_number);
-    //        //infoWindow.open(map, marker);
-    //    });
-    //});
-
     this.markers.push(marker);
 
 }
@@ -240,60 +225,10 @@ function geoCodeAddress(address, callback) {
     this.getGeoCoder().geocode({
         'address': address,
         componentRestrictions: {
-            country: 'AE',
-            locality: 'Discovery Gardens'
+            country: 'AE'
         }
     }, callback);
 };
-
-function geocodeLatLng(geocoder, map, latlng) {
-    //const input = document.getElementById("latlng").value;
-    //const latlngStr = input.split(",", 2);
-    //const latlng = {
-    //    lat: parseFloat(latlngStr[0]),
-    //    lng: parseFloat(latlngStr[1]),
-    //};
-    debugger
-    geocoder.geocode({ location: latlng }, (results, status) => {
-        if (status === "OK") {
-            if (results[0]) {
-                //map.setZoom(16);
-                //const marker = new google.maps.Marker({
-                //    position: latlng,
-                //    map: map,
-                //});
-                //debugger
-                //alert(results[0].formatted_address);
-                debugger
-                GoogleMapAPI.deleteMarkers();
-                GoogleMapAPI.addMarker(latlng);
-                $("#txtReverseAddress").val(results[0].formatted_address);
-                //const request = {
-                //    placeId: results[0].place_id,
-                //    fields: ["name", "formatted_address", "place_id", "geometry"],
-                //};
-
-                //const service = new google.maps.places.PlacesService(map);
-
-                //service.getDetails(request, (place, status) => {
-                //    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                //        debugger
-                //        alert(place.name + " - " + place.formatted_address);
-                //    }
-                //});
-
-
-                //const infowindow = new google.maps.InfoWindow();
-                //infowindow.setContent(results[0].formatted_address);
-                //infowindow.open(map, marker);
-            } else {
-                window.alert("No results found");
-            }
-        } else {
-            window.alert("Geocoder failed due to: " + status);
-        }
-    });
-}
 
 function setMapOnAllMarkers(map) {
     for (let i = 0; i < this.markers.length; i++) {
@@ -331,41 +266,6 @@ function createCircle(location) {
     this.circles.push(circle);
 }
 
-
-function createPolygon(location) {
-
-    //if (location == undefined)
-    //    location = this.getDefaultCoorindates();
-  
-    const polygonCoordinatess = [
-        { lat: 25.050956, lng: 55.134056 },     
-        { lat: 25.050985, lng: 55.133820 },
-        { lat: 25.049216, lng: 55.127329},
-        { lat: 25.039107, lng: 55.140654 },
-        { lat: 25.033926, lng: 55.147628 },   
-        { lat: 25.025348, lng: 55.159345 },
-        { lat: 25.028381, lng: 55.162124 },
-        { lat: 25.028381, lng: 55.162124 },
-        { lat: 25.028565, lng: 55.162081 },   
-        { lat: 25.050917, lng: 55.134147 },   
-    ];
-
-    const polygon = new google.maps.Polygon({
-        paths: polygonCoordinatess,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35,
-        clickable: true
-    });
-    polygon.setMap(this.map);
-
-    google.maps.event.addListener(polygon, 'click', PolygonClicked);
-
-    this.polygons.push(polygon);
-}
-
 function deleteCircles() {
 
     for (let i = 0; i < this.circles.length; i++) {
@@ -373,15 +273,6 @@ function deleteCircles() {
         this.circles[i].setMap(null);
     }
     this.circles = [];
-}
-
-function deletePolygons() {
-
-    for (let i = 0; i < this.polygons.length; i++) {
-        google.maps.event.clearListeners(this.polygons[i], 'click');
-        this.polygons[i].setMap(null);
-    }
-    this.polygons = [];
 }
 
 function setMapBounds(bounds) {
@@ -395,16 +286,15 @@ function setMapBounds(bounds) {
 }
 
 function geoCodeAddressWithBounds(address, bounds, callBack) {
-    debugger
+
     if (address == '')
         console.log('Invalid address');
     else {
         this.getGeoCoder().geocode({
             'address': address,
-            bounds: bounds,
+
             componentRestrictions: {
-                country: 'AE',
-                locality: 'Discovery'
+                country: 'AE'
             }
         }, callBack);
     }
@@ -421,11 +311,8 @@ function setMapNewCenter(coordinates) {
     };
 
     this.deleteMarkers();
-    this.deleteCircles();
     this.map.setOptions(options);
     this.addMarker(coordinates);
-    this.createCircle(coordinates);
-    //  this.setMapBounds(this.circles[0].getBounds());
 }
 
 function setMapNewCenterWithoutBounds(coordinates) {
@@ -439,11 +326,27 @@ function setMapNewCenterWithoutBounds(coordinates) {
     };
 
     this.deleteMarkers();
-    this.deleteCircles();
+    //  this.deleteCircles();
     this.setMapBounds(this.getUAEBounds());
     this.map.setOptions(options);
     //    this.addMarker(coordinates);
 
+}
+
+function reverseGeoCodeAddress(latlng) {
+
+    this.getGeoCoder().geocode({ location: latlng }, function (results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[0]) {
+                NotifyCoordinatesToParent(latlng, results[0].formatted_address);
+            } else {
+                window.alert("No results found");
+            }
+        } else {
+            window.alert("Geocoder failed due to: " + status);
+        }
+    });
 }
 
 function LoadMap() {
@@ -454,8 +357,8 @@ function LoadMap() {
     if (coordinates.lat() == 0 || coordinates.lng() == 0) //Search for Other Area
         GoogleMapAPI.geoCodeAddress(MapOptions.getBuildingWithAreaEmirate(), GeoCodeResponse_SetCoordinatesMapCenter);
     else {
-        GoogleMapAPI.setMapNewCenter(coordinates);
-        GoogleMapAPI.geoCodeAddressWithBounds(MapOptions.getBuilding() + " " + MapOptions.getStreet() + " " + MapOptions.getAreaText(), GoogleMapAPI.circles[0].getBounds(), GeoCodeResponse_VerifyBounds);
+        //        GoogleMapAPI.setMapNewCenter(coordinates);
+        GoogleMapAPI.geoCodeAddress(MapOptions.getBuilding() + " " + MapOptions.getAreaText() + " " + MapOptions.getEmirateText(), GeoCodeResponse_SetCoordinatesMapCenter);
     }
 
     google.maps.event.clearListeners(GoogleMapAPI.map, 'click');
@@ -465,21 +368,19 @@ function LoadMap() {
 
 function LoadMapWithCoordinates(lat, lng) {
 
-    debugger
-
     GoogleMapAPI.initializeMap();
 
     var coordinates = new google.maps.LatLng(lat, lng);
     var areaCoordinates = GoogleMapAPI.getAreaCoorindates();
 
+    console.log('Finding location by coordinates');
     if (areaCoordinates.lat() == 0 || areaCoordinates.lng() == 0) //Search for Other Area
     {
-        console.log('Finding location by coordinates');
+
         GoogleMapAPI.setMapNewCenterWithoutBounds(coordinates);
     }
     else {
-        GoogleMapAPI.setMapNewCenter(areaCoordinates);
-        GoogleMapAPI.deleteMarkers();
+        GoogleMapAPI.setMapNewCenterWithoutBounds(coordinates);
     }
 
     GoogleMapAPI.addMarker(coordinates);
@@ -491,32 +392,15 @@ function LoadMapWithCoordinates(lat, lng) {
 
 function MapClickCallback(event) {
 
-    //debugger
     //var areaValue = MapOptions.getAreaValue();
     //if (MapOptions.IsUnknownArea()) {
-    //    GoogleMapAPI.deleteMarkers();
-    //    GoogleMapAPI.addMarker(event.latLng);
-    //    NotifyCoordinatesToParent(event.latLng);
+    GoogleMapAPI.deleteMarkers();
+    GoogleMapAPI.addMarker(event.latLng);
+    GoogleMapAPI.reverseGeoCodeAddress(event.latLng);
     //} else {
     //    var notifyResponse = new MapNotifyResponse(true, ErrorCodes.OutsideCircle, null);
     //    fakeNotify(notifyResponse);
     //}
-
-    var polygon = GoogleMapAPI.polygons[0];
-    if (polygon == undefined || polygon == null)
-        alert('Polygon not found');
-    else {
-        const isInsideBounds = google.maps.geometry.poly.containsLocation(event.latLng, polygon)
-        if (isInsideBounds)
-            alert("Inside Polygon Boundary");
-        else
-            alert("Outside Polygon Boundary");
-    }
-    $("#txtReverseAddress").val("");
-    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng)
-
-
-
 }
 
 function GeoCodeResponse_SetCoordinatesMapCenter(results, status) {
@@ -539,7 +423,7 @@ function GeoCodeResponse_SetCoordinatesMapCenter(results, status) {
 }
 
 function GeoCodeResponse_VerifyBounds(results, status) {
-    debugger
+
     if (status == google.maps.GeocoderStatus.OK) {
 
         //Get bounds of circle
@@ -601,36 +485,18 @@ function HideMap() {
 
 function CircleClicked(event) {
 
-    debugger
 
-    //NotifyCoordinatesToParent(event.latLng);
-
-    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);
-}
-
-function PolygonClicked(event) {
-
-    var polygon = GoogleMapAPI.polygons[0];
-    if (polygon == undefined || polygon == null)
-        alert('Polygon not found');
-    else {
-        const isInsideBounds = google.maps.geometry.poly.containsLocation(event.latLng, polygon)
-        if (isInsideBounds)
-            alert("Inside Polygon Boundary");
-        else
-            alert("Outside Polygon Boundary");
-    }
-    //NotifyCoordinatesToParent(event.latLng);
-
-    geocodeLatLng(GoogleMapAPI.getGeoCoder(), GoogleMapAPI.map, event.latLng);
+    GoogleMapAPI.deleteMarkers();
+    GoogleMapAPI.addMarker(event.latLng);
+    GoogleMapAPI.reverseGeoCodeAddress(event.latLng);
 }
 
 
-function NotifyCoordinatesToParent(location) {
+function NotifyCoordinatesToParent(location, address) {
 
     var element = $("span[id*='mapFakeNotify']")
     var coordinates = new MapCoordinates(location.lat(), location.lng());
-    var notifyResponse = new MapNotifyResponse(false, '', coordinates);
+    var notifyResponse = new MapNotifyResponse(false, '', coordinates, address);
     if (element.length > 0) {
         OsNotifyWidget(element.attr('id'), JSON.stringify(notifyResponse));
     }

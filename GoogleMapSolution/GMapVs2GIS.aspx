@@ -41,14 +41,14 @@
 
         function Load2GISMap() {
             if (validateFields()) {
-                debugger
+
                 textToSearch = $("#txtBuildingSearch").val();
                 GeoCodeAddress2GIS(textToSearch, latitude, longitude, radius);
             }
         }
 
         function LoadGoogleMap() {
-            debugger
+
             if (validateFields()) {
                 var lat = parseFloat(latitude);
                 var long = parseFloat(longitude);
